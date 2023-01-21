@@ -103,9 +103,10 @@ namespace TrainingGrounds.Utils
             PublicKey clubAdmin,
             PublicKey collectionId,
             PublicKey rewardMint,
-            CollectionIdentifierType idType)
+            CollectionIdentifierType idType,
+            RegisterClubAccounts accounts = null)
         {
-            var accounts = GetRegisterClubAccounts(programAdmin, clubAdmin, collectionId, rewardMint);
+            accounts = accounts ?? GetRegisterClubAccounts(programAdmin, clubAdmin, collectionId, rewardMint);
             return TrainingGroundsProgram.RegisterClub(
                 accounts,
                 new CollectionIdentifier()
@@ -146,26 +147,26 @@ namespace TrainingGrounds.Utils
 
         public static async Task<bool> IsProgramAdminAsync(PublicKey user, IRpcClient client)
         {
-            //try
-            //{
-            //    var res = await new TrainingGroundsClient(client, null, PROGRAM_ID).GetProgramAdminProofAsync(GetProgramAdminProofPda(user));
-            //    return res.WasDeserializationSuccessful && user == res.ParsedResult.Admin;
-            //} catch
-            //{
-            //    // There's an undefined error in deserialization / rpc client, not sure what gives.
-            //    return false;
-            //}
             var res = await client.GetAccountInfoAsync(GetProgramAdminProofPda(user), Commitment.Confirmed);
             if (!res.WasSuccessful || res.Result?.Value?.Data == null)
                 return false;
             var resultingAccount = ProgramAdminProof.Deserialize(Convert.FromBase64String(res.Result.Value.Data[0]));
             return resultingAccount.Admin == user;
         }
-
+        
         public static async Task<IEnumerable<Club>> GetActiveClubsAsync(IRpcClient client)
         {
-            var res = await new TrainingGroundsClient(client, null, PROGRAM_ID).GetClubsAsync(PROGRAM_ID);
-            return res.ParsedResult ?.Where(o=>o.GameParams.GameIsActive);
+            var list = new List<Solnet.Rpc.Models.MemCmp>
+            {
+                new Solnet.Rpc.Models.MemCmp{Bytes = Club.ACCOUNT_DISCRIMINATOR_B58, Offset = 0},
+                new MemCmp{Bytes = Convert.ToBase64String(new []{Convert.ToByte(true)}), Offset = 106}
+            };
+            var res = await client.GetProgramAccountsAsync(PROGRAM_ID, Commitment.Confirmed, memCmpList: list);
+            if (!res.WasSuccessful)
+                return new List<Club>(0);
+            List<Club> resultingAccounts = new List<Club>(res.Result.Count);
+            resultingAccounts.AddRange(res.Result.Select(result => Club.Deserialize(Convert.FromBase64String(result.Account.Data[0]))));
+            return resultingAccounts;
         }
     }
 }

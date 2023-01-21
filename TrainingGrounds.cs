@@ -798,7 +798,7 @@ namespace TrainingGrounds
             public static Solana.Unity.Rpc.Models.TransactionInstruction FundGame(FundGameAccounts accounts, ulong amount, PublicKey programId)
             {
                 List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
-                {Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, true), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.SourceTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                {Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, true), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.SourceTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(16156126827343120711UL, offset);
@@ -813,7 +813,7 @@ namespace TrainingGrounds
             public static Solana.Unity.Rpc.Models.TransactionInstruction WithdrawFunds(WithdrawFundsAccounts accounts, PublicKey programId)
             {
                 List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
-                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.ClubAdmin, true), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.AdminTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.AssociatedTokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.ClubAdmin, true), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.AdminTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.AssociatedTokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(15665806283886109937UL, offset);

@@ -1,19 +1,22 @@
 using System.Text;
 using System.Collections.Generic;
-using Solnet;
-using Solnet.Programs;
-using Solnet.Programs.Abstract;
-using Solnet.Programs.Utilities;
-using Solnet.Rpc;
-using Solnet.Rpc.Builders;
-using Solnet.Rpc.Core.Http;
-using Solnet.Rpc.Core.Sockets;
-using Solnet.Rpc.Models;
-using Solnet.Rpc.Types;
-using Solnet.Wallet;
+using Solana.Unity;
+using Solana.Unity.Programs;
+using Solana.Unity.Programs.Abstract;
+using Solana.Unity.Programs.Utilities;
+using Solana.Unity.Rpc;
+using Solana.Unity.Rpc.Builders;
+using Solana.Unity.Rpc.Core.Http;
+using Solana.Unity.Rpc.Core.Sockets;
+using Solana.Unity.Rpc.Models;
+using Solana.Unity.Rpc.Types;
+using Solana.Unity.Wallet;
 using TrainingGrounds.Accounts;
 using TrainingGrounds.Program;
 using TrainingGrounds.Types;
+using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace TrainingGrounds.Utils
 {
@@ -53,6 +56,9 @@ namespace TrainingGrounds.Utils
         public static PublicKey GetProgramDataPda() => derivePda(BPF_LOADER_UPGRADEABLE, PROGRAM_ID).Key;
         public static PublicKey GetProgramAdminProofPda(PublicKey programAdmin) => ownPda("program_admin", programAdmin).Key;
         public static PublicKey GetClubPda(PublicKey collectionKey) => ownPda("club", collectionKey).Key;
+
+        public static PublicKey GetClubPda(CollectionIdentifier collectionIdentifier) =>
+            GetClubPda(collectionIdentifier?.CollectionValue?.Pubkey ?? collectionIdentifier?.CreatorValue?.Pubkey);
         public static PublicKey GetRewardsPda(PublicKey clubKey) => ownPda("rewards", clubKey).Key;
         public static PublicKey GetPlayerPda(PublicKey mintKey, PublicKey clubKey) => ownPda("player", mintKey, clubKey).Key;
 
@@ -103,6 +109,7 @@ namespace TrainingGrounds.Utils
             PublicKey clubAdmin,
             PublicKey collectionId,
             PublicKey rewardMint,
+            GameParams gameParams,
             CollectionIdentifierType idType,
             RegisterClubAccounts accounts = null)
         {
@@ -125,9 +132,12 @@ namespace TrainingGrounds.Utils
                         }
                         : null
                 },
+                gameParams,
                 PROGRAM_ID
             );
         }
+        
+        
 
         public static RegisterClubAccounts GetRegisterClubAccounts(PublicKey programAdmin, PublicKey clubAdmin, PublicKey collectionId, PublicKey rewardMint)
         {
@@ -145,6 +155,73 @@ namespace TrainingGrounds.Utils
             return accounts;
         }
 
+        public static TransactionInstruction CreateEditGameInstruction(PublicKey clubAdmin, PublicKey club, GameParams gameParams)
+        {
+            var accounts = new EditGameAccounts()
+            {
+                ClubAdmin = clubAdmin,
+                Club = club
+            };
+            return TrainingGroundsProgram.EditGame(accounts, gameParams, PROGRAM_ID);
+        }
+        
+        public static TransactionInstruction CreateSetMetadataMintInstruction(PublicKey clubAdmin, PublicKey club, PublicKey mint)
+        {
+            var accounts = new SetMetadataMintAccounts()
+            {
+                ClubAdmin = clubAdmin,
+                Club = club,
+                Mint = mint
+            };
+            return TrainingGroundsProgram.SetMetadataMint(accounts, PROGRAM_ID);
+        }
+
+        public static TransactionInstruction CreateFundGameInstruction(Club club, ulong amount, FundGameAccounts accounts = null)
+        {
+            // Not using math.pow here because can't be arsed with double...
+            accounts = accounts ?? GetFundGameAccounts(club);
+            for (var i = 0; i < club.RewardMintDecimals; i++)
+            {
+                amount = amount * 10;
+            }
+            return TrainingGroundsProgram.FundGame(accounts, amount, PROGRAM_ID);
+        }
+
+        public static FundGameAccounts GetFundGameAccounts(Club club)
+        {
+            return new FundGameAccounts()
+            {
+                ClubAdmin = club.ClubAdmin,
+                Club = GetClubPda(club.CollectionIdentifier),
+                RewardMint = club.RewardMint,
+                RewardAccount = GetRewardsPda(GetClubPda(club.CollectionIdentifier)),
+                SourceTokenAccount = AssociatedTokenAccountProgram.DeriveAssociatedTokenAccount(club.ClubAdmin, club.RewardMint),
+                SystemProgram = SystemProgram.ProgramIdKey,
+                TokenProgram = TOKEN_PROGRAM_ID
+            };
+        }
+
+        public static TransactionInstruction CreateWithdrawFundsInstruction(Club club, WithdrawFundsAccounts accounts = null)
+        {
+            accounts = accounts ?? GetWithdrawFundsAccounts(club);
+            return TrainingGroundsProgram.WithdrawFunds(accounts, PROGRAM_ID);
+        }
+
+        public static WithdrawFundsAccounts GetWithdrawFundsAccounts(Club club)
+        {
+            return new WithdrawFundsAccounts()
+            {
+                ClubAdmin = club.ClubAdmin,
+                Club = GetClubPda(club.CollectionIdentifier),
+                RewardMint = club.RewardMint,
+                RewardAccount = GetRewardsPda(GetClubPda(club.CollectionIdentifier)),
+                AdminTokenAccount = AssociatedTokenAccountProgram.DeriveAssociatedTokenAccount(club.ClubAdmin, club.RewardMint),
+                TokenProgram = TOKEN_PROGRAM_ID,
+                AssociatedTokenProgram = AssociatedTokenAccountProgram.ProgramIdKey,
+                SystemProgram = SystemProgram.ProgramIdKey,
+            };
+        }
+
         public static async Task<bool> IsProgramAdminAsync(PublicKey user, IRpcClient client)
         {
             var res = await client.GetAccountInfoAsync(GetProgramAdminProofPda(user), Commitment.Confirmed);
@@ -154,12 +231,12 @@ namespace TrainingGrounds.Utils
             return resultingAccount.Admin == user;
         }
         
-        public static async Task<IEnumerable<Club>> GetActiveClubsAsync(IRpcClient client)
+        public static async Task<List<Club>> FetchActiveClubsAsync(IRpcClient client)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp>
+            var list = new List<Solana.Unity.Rpc.Models.MemCmp>
             {
-                new Solnet.Rpc.Models.MemCmp{Bytes = Club.ACCOUNT_DISCRIMINATOR_B58, Offset = 0},
-                new MemCmp{Bytes = Convert.ToBase64String(new []{Convert.ToByte(true)}), Offset = 106}
+                new Solana.Unity.Rpc.Models.MemCmp{Bytes = Club.ACCOUNT_DISCRIMINATOR_B58, Offset = 0},
+                new MemCmp{Bytes = Convert.ToBase64String(new []{Convert.ToByte(true)}), Offset = 107}
             };
             var res = await client.GetProgramAccountsAsync(PROGRAM_ID, Commitment.Confirmed, memCmpList: list);
             if (!res.WasSuccessful)
@@ -168,5 +245,20 @@ namespace TrainingGrounds.Utils
             resultingAccounts.AddRange(res.Result.Select(result => Club.Deserialize(Convert.FromBase64String(result.Account.Data[0]))));
             return resultingAccounts;
         }
+        
+        public static async Task<List<Club>> FetchAllClubsAsync(IRpcClient client)
+        {
+            var list = new List<Solana.Unity.Rpc.Models.MemCmp>
+            {
+                new Solana.Unity.Rpc.Models.MemCmp{Bytes = Club.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}
+            };
+            var res = await client.GetProgramAccountsAsync(PROGRAM_ID, Commitment.Confirmed, memCmpList: list);
+            if (!res.WasSuccessful)
+                return new List<Club>(0);
+            List<Club> resultingAccounts = new List<Club>(res.Result.Count);
+            resultingAccounts.AddRange(res.Result.Select(result => Club.Deserialize(Convert.FromBase64String(result.Account.Data[0]))));
+            return resultingAccounts;
+        }
+        
     }
 }

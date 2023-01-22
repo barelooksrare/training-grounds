@@ -17,6 +17,7 @@ using TrainingGrounds.Types;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace TrainingGrounds.Utils
 {
@@ -439,5 +440,42 @@ namespace TrainingGrounds.Utils
 
         }
 
+        public static async Task<string> FetchMetadataUrl(PublicKey mint, IRpcClient client)
+        {
+            var pda = derivePda(TOKEN_METADATA_PROGRAM, "metadata", TOKEN_METADATA_PROGRAM, mint).Key;
+            var res = await client.GetAccountInfoAsync(pda);
+            if (!res.WasSuccessful
+             || res.Result?.Value?.Data?[0] == null
+             || res.Result.Value.Data[0]
+                    .Length
+             == 0)
+                return null;
+            var uri = DecodeJsonMetadataUri(Convert.FromBase64String(res.Result.Value.Data[0]));
+            return uri;
+        }
+        
+        private static string DecodeJsonMetadataUri(ReadOnlySpan<byte> data)
+        {
+            var ok = data.GetBorshString(115, out string res);
+            return res.Replace("\0", "");
+        }
+
+        public static string GetImageLinkFromJson(string json)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<SplStandardMetadata>(json)
+                    .image;
+            } catch
+            {
+                return null;
+            }
+        }
+        
+        public class SplStandardMetadata
+        {
+            public string image { get; set; }
+        }
+        
     }
 }

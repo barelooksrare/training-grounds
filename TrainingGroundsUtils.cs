@@ -37,6 +37,7 @@ namespace TrainingGrounds.Utils
         public ulong MaxRewardsPerGame { get; set; }
         public byte MaxPlayerEnergy { get; set; }
         public long EnergyRechargeMinutes { get; set; }
+        public bool BurnRemainingTokens { get; set; }
         private int decimals { get; set; }
 
         public DisplayGameParams(Club club)
@@ -45,6 +46,7 @@ namespace TrainingGrounds.Utils
             MaxPlayerEnergy = club.GameParams.MaxPlayerEnergy;
             var maxRewards = club.GameParams.MaxRewardsPerGame;
             EnergyRechargeMinutes = club.GameParams.EnergyRechargeMinutes;
+            BurnRemainingTokens = club.GameParams.BurnRemainingTokens;
             for (var i = 0; i < decimals; i++)
             {
                 maxRewards = maxRewards / 10;
@@ -63,7 +65,8 @@ namespace TrainingGrounds.Utils
             {
                 EnergyRechargeMinutes = displayParams.EnergyRechargeMinutes,
                 MaxPlayerEnergy = displayParams.MaxPlayerEnergy,
-                MaxRewardsPerGame = maxRewards
+                MaxRewardsPerGame = maxRewards,
+                BurnRemainingTokens = displayParams.BurnRemainingTokens,
             };
         }
     }

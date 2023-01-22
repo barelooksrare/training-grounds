@@ -1,4 +1,5 @@
 using TrainingGrounds.Accounts;
+using TrainingGrounds.Utils;
 
 namespace TrainingGrounds.Extensions
 {
@@ -13,6 +14,11 @@ namespace TrainingGrounds.Extensions
             var rechargeInterval = club.GameParams.EnergyRechargeMinutes;
             var calculatedEnergy = player.Energy + timePassed / rechargeInterval;
             return (int)Math.Min(calculatedEnergy, club.GameParams.MaxPlayerEnergy);
+        }
+
+        public static DisplayGameParams GetDisplayGameParams(this Club club)
+        {
+            return new DisplayGameParams(club);
         }
     }
 }

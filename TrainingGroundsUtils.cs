@@ -32,6 +32,42 @@ namespace TrainingGrounds.Utils
         }
     }
 
+    public class DisplayGameParams
+    {
+        public ulong MaxRewardsPerGame { get; set; }
+        public byte MaxPlayerEnergy { get; set; }
+        public long EnergyRechargeMinutes { get; set; }
+        private int decimals { get; set; }
+
+        public DisplayGameParams(Club club)
+        {
+            decimals = club.RewardMintDecimals;
+            MaxPlayerEnergy = club.GameParams.MaxPlayerEnergy;
+            var maxRewards = club.GameParams.MaxRewardsPerGame;
+            EnergyRechargeMinutes = club.GameParams.EnergyRechargeMinutes;
+            for (var i = 0; i < decimals; i++)
+            {
+                maxRewards = maxRewards / 10;
+            }
+            MaxRewardsPerGame = maxRewards;
+        }
+        
+        public static implicit operator GameParams(DisplayGameParams displayParams)
+        {
+            var maxRewards = displayParams.MaxRewardsPerGame;
+            for (var i = 0; i < displayParams.decimals; i++)
+            {
+                maxRewards = maxRewards * 10;
+            }
+            return new GameParams()
+            {
+                EnergyRechargeMinutes = displayParams.EnergyRechargeMinutes,
+                MaxPlayerEnergy = displayParams.MaxPlayerEnergy,
+                MaxRewardsPerGame = maxRewards
+            };
+        }
+    }
+
     public static class TrainingGroundsUtils
     {
         public static PublicKey PROGRAM_ID = new PublicKey("SwipTb7pcUA7VH6LKeHAnx5TnCYULRU2SYVK6QiJQte");

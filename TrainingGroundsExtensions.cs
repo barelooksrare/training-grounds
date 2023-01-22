@@ -13,7 +13,7 @@ namespace TrainingGrounds.Extensions
             var rechargeStartTime = player.RechargeStartTime;
             var now = DateTimeOffset.Now.ToUnixTimeSeconds();
             var timePassed = now - rechargeStartTime;
-            var rechargeInterval = club.GameParams.EnergyRechargeMinutes;
+            var rechargeInterval = club.GameParams.EnergyRechargeMinutes * 60;
             var calculatedEnergy = player.Energy + timePassed / rechargeInterval;
             return (int)Math.Min(calculatedEnergy, club.GameParams.MaxPlayerEnergy);
         }

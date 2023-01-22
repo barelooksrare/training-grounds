@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using Solnet;
-using Solnet.Programs.Abstract;
-using Solnet.Programs.Utilities;
-using Solnet.Rpc;
-using Solnet.Rpc.Builders;
-using Solnet.Rpc.Core.Http;
-using Solnet.Rpc.Core.Sockets;
-using Solnet.Rpc.Types;
-using Solnet.Wallet;
+using Solana.Unity;
+using Solana.Unity.Programs.Abstract;
+using Solana.Unity.Programs.Utilities;
+using Solana.Unity.Rpc;
+using Solana.Unity.Rpc.Builders;
+using Solana.Unity.Rpc.Core.Http;
+using Solana.Unity.Rpc.Core.Sockets;
+using Solana.Unity.Rpc.Types;
+using Solana.Unity.Wallet;
 using TrainingGrounds;
 using TrainingGrounds.Program;
 using TrainingGrounds.Errors;
@@ -372,107 +372,107 @@ namespace TrainingGrounds
         {
         }
 
-        public async Task<Solnet.Programs.Models.ProgramAccountsResultWrapper<List<GameAdminProof>>> GetGameAdminProofsAsync(string programAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<GameAdminProof>>> GetGameAdminProofsAsync(string programAddress, Commitment commitment = Commitment.Finalized)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp>{new Solnet.Rpc.Models.MemCmp{Bytes = GameAdminProof.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
+            var list = new List<Solana.Unity.Rpc.Models.MemCmp>{new Solana.Unity.Rpc.Models.MemCmp{Bytes = GameAdminProof.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
             var res = await RpcClient.GetProgramAccountsAsync(programAddress, commitment, memCmpList: list);
             if (!res.WasSuccessful || !(res.Result?.Count > 0))
-                return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<GameAdminProof>>(res);
+                return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<GameAdminProof>>(res);
             List<GameAdminProof> resultingAccounts = new List<GameAdminProof>(res.Result.Count);
             resultingAccounts.AddRange(res.Result.Select(result => GameAdminProof.Deserialize(Convert.FromBase64String(result.Account.Data[0]))));
-            return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<GameAdminProof>>(res, resultingAccounts);
+            return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<GameAdminProof>>(res, resultingAccounts);
         }
 
-        public async Task<Solnet.Programs.Models.ProgramAccountsResultWrapper<List<ProgramAdminProof>>> GetProgramAdminProofsAsync(string programAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<ProgramAdminProof>>> GetProgramAdminProofsAsync(string programAddress, Commitment commitment = Commitment.Finalized)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp>{new Solnet.Rpc.Models.MemCmp{Bytes = ProgramAdminProof.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
+            var list = new List<Solana.Unity.Rpc.Models.MemCmp>{new Solana.Unity.Rpc.Models.MemCmp{Bytes = ProgramAdminProof.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
             var res = await RpcClient.GetProgramAccountsAsync(programAddress, commitment, memCmpList: list);
             if (!res.WasSuccessful || !(res.Result?.Count > 0))
-                return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<ProgramAdminProof>>(res);
+                return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<ProgramAdminProof>>(res);
             List<ProgramAdminProof> resultingAccounts = new List<ProgramAdminProof>(res.Result.Count);
             resultingAccounts.AddRange(res.Result.Select(result => ProgramAdminProof.Deserialize(Convert.FromBase64String(result.Account.Data[0]))));
-            return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<ProgramAdminProof>>(res, resultingAccounts);
+            return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<ProgramAdminProof>>(res, resultingAccounts);
         }
 
-        public async Task<Solnet.Programs.Models.ProgramAccountsResultWrapper<List<Club>>> GetClubsAsync(string programAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<Club>>> GetClubsAsync(string programAddress, Commitment commitment = Commitment.Finalized)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp>{new Solnet.Rpc.Models.MemCmp{Bytes = Club.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
+            var list = new List<Solana.Unity.Rpc.Models.MemCmp>{new Solana.Unity.Rpc.Models.MemCmp{Bytes = Club.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
             var res = await RpcClient.GetProgramAccountsAsync(programAddress, commitment, memCmpList: list);
             if (!res.WasSuccessful || !(res.Result?.Count > 0))
-                return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<Club>>(res);
+                return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<Club>>(res);
             List<Club> resultingAccounts = new List<Club>(res.Result.Count);
             resultingAccounts.AddRange(res.Result.Select(result => Club.Deserialize(Convert.FromBase64String(result.Account.Data[0]))));
-            return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<Club>>(res, resultingAccounts);
+            return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<Club>>(res, resultingAccounts);
         }
 
-        public async Task<Solnet.Programs.Models.ProgramAccountsResultWrapper<List<Game>>> GetGamesAsync(string programAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<Game>>> GetGamesAsync(string programAddress, Commitment commitment = Commitment.Finalized)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp>{new Solnet.Rpc.Models.MemCmp{Bytes = Game.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
+            var list = new List<Solana.Unity.Rpc.Models.MemCmp>{new Solana.Unity.Rpc.Models.MemCmp{Bytes = Game.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
             var res = await RpcClient.GetProgramAccountsAsync(programAddress, commitment, memCmpList: list);
             if (!res.WasSuccessful || !(res.Result?.Count > 0))
-                return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<Game>>(res);
+                return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<Game>>(res);
             List<Game> resultingAccounts = new List<Game>(res.Result.Count);
             resultingAccounts.AddRange(res.Result.Select(result => Game.Deserialize(Convert.FromBase64String(result.Account.Data[0]))));
-            return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<Game>>(res, resultingAccounts);
+            return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<Game>>(res, resultingAccounts);
         }
 
-        public async Task<Solnet.Programs.Models.ProgramAccountsResultWrapper<List<Player>>> GetPlayersAsync(string programAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<Player>>> GetPlayersAsync(string programAddress, Commitment commitment = Commitment.Finalized)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp>{new Solnet.Rpc.Models.MemCmp{Bytes = Player.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
+            var list = new List<Solana.Unity.Rpc.Models.MemCmp>{new Solana.Unity.Rpc.Models.MemCmp{Bytes = Player.ACCOUNT_DISCRIMINATOR_B58, Offset = 0}};
             var res = await RpcClient.GetProgramAccountsAsync(programAddress, commitment, memCmpList: list);
             if (!res.WasSuccessful || !(res.Result?.Count > 0))
-                return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<Player>>(res);
+                return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<Player>>(res);
             List<Player> resultingAccounts = new List<Player>(res.Result.Count);
             resultingAccounts.AddRange(res.Result.Select(result => Player.Deserialize(Convert.FromBase64String(result.Account.Data[0]))));
-            return new Solnet.Programs.Models.ProgramAccountsResultWrapper<List<Player>>(res, resultingAccounts);
+            return new Solana.Unity.Programs.Models.ProgramAccountsResultWrapper<List<Player>>(res, resultingAccounts);
         }
 
-        public async Task<Solnet.Programs.Models.AccountResultWrapper<GameAdminProof>> GetGameAdminProofAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.AccountResultWrapper<GameAdminProof>> GetGameAdminProofAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
         {
             var res = await RpcClient.GetAccountInfoAsync(accountAddress, commitment);
             if (!res.WasSuccessful)
-                return new Solnet.Programs.Models.AccountResultWrapper<GameAdminProof>(res);
+                return new Solana.Unity.Programs.Models.AccountResultWrapper<GameAdminProof>(res);
             var resultingAccount = GameAdminProof.Deserialize(Convert.FromBase64String(res.Result.Value.Data[0]));
-            return new Solnet.Programs.Models.AccountResultWrapper<GameAdminProof>(res, resultingAccount);
+            return new Solana.Unity.Programs.Models.AccountResultWrapper<GameAdminProof>(res, resultingAccount);
         }
 
-        public async Task<Solnet.Programs.Models.AccountResultWrapper<ProgramAdminProof>> GetProgramAdminProofAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.AccountResultWrapper<ProgramAdminProof>> GetProgramAdminProofAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
         {
             var res = await RpcClient.GetAccountInfoAsync(accountAddress, commitment);
             if (!res.WasSuccessful)
-                return new Solnet.Programs.Models.AccountResultWrapper<ProgramAdminProof>(res);
+                return new Solana.Unity.Programs.Models.AccountResultWrapper<ProgramAdminProof>(res);
             var resultingAccount = ProgramAdminProof.Deserialize(Convert.FromBase64String(res.Result.Value.Data[0]));
-            return new Solnet.Programs.Models.AccountResultWrapper<ProgramAdminProof>(res, resultingAccount);
+            return new Solana.Unity.Programs.Models.AccountResultWrapper<ProgramAdminProof>(res, resultingAccount);
         }
 
-        public async Task<Solnet.Programs.Models.AccountResultWrapper<Club>> GetClubAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.AccountResultWrapper<Club>> GetClubAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
         {
             var res = await RpcClient.GetAccountInfoAsync(accountAddress, commitment);
             if (!res.WasSuccessful)
-                return new Solnet.Programs.Models.AccountResultWrapper<Club>(res);
+                return new Solana.Unity.Programs.Models.AccountResultWrapper<Club>(res);
             var resultingAccount = Club.Deserialize(Convert.FromBase64String(res.Result.Value.Data[0]));
-            return new Solnet.Programs.Models.AccountResultWrapper<Club>(res, resultingAccount);
+            return new Solana.Unity.Programs.Models.AccountResultWrapper<Club>(res, resultingAccount);
         }
 
-        public async Task<Solnet.Programs.Models.AccountResultWrapper<Game>> GetGameAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.AccountResultWrapper<Game>> GetGameAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
         {
             var res = await RpcClient.GetAccountInfoAsync(accountAddress, commitment);
             if (!res.WasSuccessful)
-                return new Solnet.Programs.Models.AccountResultWrapper<Game>(res);
+                return new Solana.Unity.Programs.Models.AccountResultWrapper<Game>(res);
             var resultingAccount = Game.Deserialize(Convert.FromBase64String(res.Result.Value.Data[0]));
-            return new Solnet.Programs.Models.AccountResultWrapper<Game>(res, resultingAccount);
+            return new Solana.Unity.Programs.Models.AccountResultWrapper<Game>(res, resultingAccount);
         }
 
-        public async Task<Solnet.Programs.Models.AccountResultWrapper<Player>> GetPlayerAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
+        public async Task<Solana.Unity.Programs.Models.AccountResultWrapper<Player>> GetPlayerAsync(string accountAddress, Commitment commitment = Commitment.Finalized)
         {
             var res = await RpcClient.GetAccountInfoAsync(accountAddress, commitment);
             if (!res.WasSuccessful)
-                return new Solnet.Programs.Models.AccountResultWrapper<Player>(res);
+                return new Solana.Unity.Programs.Models.AccountResultWrapper<Player>(res);
             var resultingAccount = Player.Deserialize(Convert.FromBase64String(res.Result.Value.Data[0]));
-            return new Solnet.Programs.Models.AccountResultWrapper<Player>(res, resultingAccount);
+            return new Solana.Unity.Programs.Models.AccountResultWrapper<Player>(res, resultingAccount);
         }
 
-        public async Task<SubscriptionState> SubscribeGameAdminProofAsync(string accountAddress, Action<SubscriptionState, Solnet.Rpc.Messages.ResponseValue<Solnet.Rpc.Models.AccountInfo>, GameAdminProof> callback, Commitment commitment = Commitment.Finalized)
+        public async Task<SubscriptionState> SubscribeGameAdminProofAsync(string accountAddress, Action<SubscriptionState, Solana.Unity.Rpc.Messages.ResponseValue<Solana.Unity.Rpc.Models.AccountInfo>, GameAdminProof> callback, Commitment commitment = Commitment.Finalized)
         {
             SubscriptionState res = await StreamingRpcClient.SubscribeAccountInfoAsync(accountAddress, (s, e) =>
             {
@@ -484,7 +484,7 @@ namespace TrainingGrounds
             return res;
         }
 
-        public async Task<SubscriptionState> SubscribeProgramAdminProofAsync(string accountAddress, Action<SubscriptionState, Solnet.Rpc.Messages.ResponseValue<Solnet.Rpc.Models.AccountInfo>, ProgramAdminProof> callback, Commitment commitment = Commitment.Finalized)
+        public async Task<SubscriptionState> SubscribeProgramAdminProofAsync(string accountAddress, Action<SubscriptionState, Solana.Unity.Rpc.Messages.ResponseValue<Solana.Unity.Rpc.Models.AccountInfo>, ProgramAdminProof> callback, Commitment commitment = Commitment.Finalized)
         {
             SubscriptionState res = await StreamingRpcClient.SubscribeAccountInfoAsync(accountAddress, (s, e) =>
             {
@@ -496,7 +496,7 @@ namespace TrainingGrounds
             return res;
         }
 
-        public async Task<SubscriptionState> SubscribeClubAsync(string accountAddress, Action<SubscriptionState, Solnet.Rpc.Messages.ResponseValue<Solnet.Rpc.Models.AccountInfo>, Club> callback, Commitment commitment = Commitment.Finalized)
+        public async Task<SubscriptionState> SubscribeClubAsync(string accountAddress, Action<SubscriptionState, Solana.Unity.Rpc.Messages.ResponseValue<Solana.Unity.Rpc.Models.AccountInfo>, Club> callback, Commitment commitment = Commitment.Finalized)
         {
             SubscriptionState res = await StreamingRpcClient.SubscribeAccountInfoAsync(accountAddress, (s, e) =>
             {
@@ -508,7 +508,7 @@ namespace TrainingGrounds
             return res;
         }
 
-        public async Task<SubscriptionState> SubscribeGameAsync(string accountAddress, Action<SubscriptionState, Solnet.Rpc.Messages.ResponseValue<Solnet.Rpc.Models.AccountInfo>, Game> callback, Commitment commitment = Commitment.Finalized)
+        public async Task<SubscriptionState> SubscribeGameAsync(string accountAddress, Action<SubscriptionState, Solana.Unity.Rpc.Messages.ResponseValue<Solana.Unity.Rpc.Models.AccountInfo>, Game> callback, Commitment commitment = Commitment.Finalized)
         {
             SubscriptionState res = await StreamingRpcClient.SubscribeAccountInfoAsync(accountAddress, (s, e) =>
             {
@@ -520,7 +520,7 @@ namespace TrainingGrounds
             return res;
         }
 
-        public async Task<SubscriptionState> SubscribePlayerAsync(string accountAddress, Action<SubscriptionState, Solnet.Rpc.Messages.ResponseValue<Solnet.Rpc.Models.AccountInfo>, Player> callback, Commitment commitment = Commitment.Finalized)
+        public async Task<SubscriptionState> SubscribePlayerAsync(string accountAddress, Action<SubscriptionState, Solana.Unity.Rpc.Messages.ResponseValue<Solana.Unity.Rpc.Models.AccountInfo>, Player> callback, Commitment commitment = Commitment.Finalized)
         {
             SubscriptionState res = await StreamingRpcClient.SubscribeAccountInfoAsync(accountAddress, (s, e) =>
             {
@@ -534,55 +534,55 @@ namespace TrainingGrounds
 
         public async Task<RequestResult<string>> SendAddProgramAdminAsync(AddProgramAdminAccounts accounts, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.AddProgramAdmin(accounts, programId);
+            Solana.Unity.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.AddProgramAdmin(accounts, programId);
             return await SignAndSendTransaction(instr, feePayer, signingCallback);
         }
 
         public async Task<RequestResult<string>> SendRemoveProgramAdminAsync(RemoveProgramAdminAccounts accounts, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.RemoveProgramAdmin(accounts, programId);
+            Solana.Unity.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.RemoveProgramAdmin(accounts, programId);
             return await SignAndSendTransaction(instr, feePayer, signingCallback);
         }
 
         public async Task<RequestResult<string>> SendRegisterClubAsync(RegisterClubAccounts accounts, CollectionIdentifier identifier, GameParams @params, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.RegisterClub(accounts, identifier, @params, programId);
+            Solana.Unity.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.RegisterClub(accounts, identifier, @params, programId);
             return await SignAndSendTransaction(instr, feePayer, signingCallback);
         }
 
         public async Task<RequestResult<string>> SendEditGameAsync(EditGameAccounts accounts, GameParams @params, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.EditGame(accounts, @params, programId);
+            Solana.Unity.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.EditGame(accounts, @params, programId);
             return await SignAndSendTransaction(instr, feePayer, signingCallback);
         }
 
         public async Task<RequestResult<string>> SendFundGameAsync(FundGameAccounts accounts, ulong amount, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.FundGame(accounts, amount, programId);
+            Solana.Unity.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.FundGame(accounts, amount, programId);
             return await SignAndSendTransaction(instr, feePayer, signingCallback);
         }
 
         public async Task<RequestResult<string>> SendWithdrawFundsAsync(WithdrawFundsAccounts accounts, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.WithdrawFunds(accounts, programId);
+            Solana.Unity.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.WithdrawFunds(accounts, programId);
             return await SignAndSendTransaction(instr, feePayer, signingCallback);
         }
 
         public async Task<RequestResult<string>> SendSetMetadataMintAsync(SetMetadataMintAccounts accounts, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.SetMetadataMint(accounts, programId);
+            Solana.Unity.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.SetMetadataMint(accounts, programId);
             return await SignAndSendTransaction(instr, feePayer, signingCallback);
         }
 
         public async Task<RequestResult<string>> SendStartGameAsync(StartGameAccounts accounts, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.StartGame(accounts, programId);
+            Solana.Unity.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.StartGame(accounts, programId);
             return await SignAndSendTransaction(instr, feePayer, signingCallback);
         }
 
         public async Task<RequestResult<string>> SendCompleteGameAsync(CompleteGameAccounts accounts, ulong tokens, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.CompleteGame(accounts, tokens, programId);
+            Solana.Unity.Rpc.Models.TransactionInstruction instr = Program.TrainingGroundsProgram.CompleteGame(accounts, tokens, programId);
             return await SignAndSendTransaction(instr, feePayer, signingCallback);
         }
 
@@ -749,36 +749,36 @@ namespace TrainingGrounds
 
         public static class TrainingGroundsProgram
         {
-            public static Solnet.Rpc.Models.TransactionInstruction AddProgramAdmin(AddProgramAdminAccounts accounts, PublicKey programId)
+            public static Solana.Unity.Rpc.Models.TransactionInstruction AddProgramAdmin(AddProgramAdminAccounts accounts, PublicKey programId)
             {
-                List<Solnet.Rpc.Models.AccountMeta> keys = new()
-                {Solnet.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramAdmin, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.ProgramAdminProof, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramData, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
+                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramAdmin, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.ProgramAdminProof, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramData, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(5876278395735979127UL, offset);
                 offset += 8;
                 byte[] resultData = new byte[offset];
                 Array.Copy(_data, resultData, offset);
-                return new Solnet.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
+                return new Solana.Unity.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
             }
 
-            public static Solnet.Rpc.Models.TransactionInstruction RemoveProgramAdmin(RemoveProgramAdminAccounts accounts, PublicKey programId)
+            public static Solana.Unity.Rpc.Models.TransactionInstruction RemoveProgramAdmin(RemoveProgramAdminAccounts accounts, PublicKey programId)
             {
-                List<Solnet.Rpc.Models.AccountMeta> keys = new()
-                {Solnet.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramAdmin, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.ProgramAdminProof, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramData, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
+                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramAdmin, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.ProgramAdminProof, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramData, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(2581874002924417642UL, offset);
                 offset += 8;
                 byte[] resultData = new byte[offset];
                 Array.Copy(_data, resultData, offset);
-                return new Solnet.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
+                return new Solana.Unity.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
             }
 
-            public static Solnet.Rpc.Models.TransactionInstruction RegisterClub(RegisterClubAccounts accounts, CollectionIdentifier identifier, GameParams @params, PublicKey programId)
+            public static Solana.Unity.Rpc.Models.TransactionInstruction RegisterClub(RegisterClubAccounts accounts, CollectionIdentifier identifier, GameParams @params, PublicKey programId)
             {
-                List<Solnet.Rpc.Models.AccountMeta> keys = new()
-                {Solnet.Rpc.Models.AccountMeta.Writable(accounts.ProgramAdmin, true), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramAdminProof, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
+                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.ProgramAdmin, true), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ProgramAdminProof, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(2421914087899810967UL, offset);
@@ -787,13 +787,13 @@ namespace TrainingGrounds
                 offset += @params.Serialize(_data, offset);
                 byte[] resultData = new byte[offset];
                 Array.Copy(_data, resultData, offset);
-                return new Solnet.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
+                return new Solana.Unity.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
             }
 
-            public static Solnet.Rpc.Models.TransactionInstruction EditGame(EditGameAccounts accounts, GameParams @params, PublicKey programId)
+            public static Solana.Unity.Rpc.Models.TransactionInstruction EditGame(EditGameAccounts accounts, GameParams @params, PublicKey programId)
             {
-                List<Solnet.Rpc.Models.AccountMeta> keys = new()
-                {Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, true), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Club, false)};
+                List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
+                {Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, true), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(2359221301423144866UL, offset);
@@ -801,13 +801,13 @@ namespace TrainingGrounds
                 offset += @params.Serialize(_data, offset);
                 byte[] resultData = new byte[offset];
                 Array.Copy(_data, resultData, offset);
-                return new Solnet.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
+                return new Solana.Unity.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
             }
 
-            public static Solnet.Rpc.Models.TransactionInstruction FundGame(FundGameAccounts accounts, ulong amount, PublicKey programId)
+            public static Solana.Unity.Rpc.Models.TransactionInstruction FundGame(FundGameAccounts accounts, ulong amount, PublicKey programId)
             {
-                List<Solnet.Rpc.Models.AccountMeta> keys = new()
-                {Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, true), Solnet.Rpc.Models.AccountMeta.Writable(accounts.SourceTokenAccount, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
+                {Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, true), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.SourceTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(16156126827343120711UL, offset);
@@ -816,52 +816,52 @@ namespace TrainingGrounds
                 offset += 8;
                 byte[] resultData = new byte[offset];
                 Array.Copy(_data, resultData, offset);
-                return new Solnet.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
+                return new Solana.Unity.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
             }
 
-            public static Solnet.Rpc.Models.TransactionInstruction WithdrawFunds(WithdrawFundsAccounts accounts, PublicKey programId)
+            public static Solana.Unity.Rpc.Models.TransactionInstruction WithdrawFunds(WithdrawFundsAccounts accounts, PublicKey programId)
             {
-                List<Solnet.Rpc.Models.AccountMeta> keys = new()
-                {Solnet.Rpc.Models.AccountMeta.Writable(accounts.ClubAdmin, true), Solnet.Rpc.Models.AccountMeta.Writable(accounts.AdminTokenAccount, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.AssociatedTokenProgram, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
+                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.ClubAdmin, true), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.AdminTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.AssociatedTokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(15665806283886109937UL, offset);
                 offset += 8;
                 byte[] resultData = new byte[offset];
                 Array.Copy(_data, resultData, offset);
-                return new Solnet.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
+                return new Solana.Unity.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
             }
 
-            public static Solnet.Rpc.Models.TransactionInstruction SetMetadataMint(SetMetadataMintAccounts accounts, PublicKey programId)
+            public static Solana.Unity.Rpc.Models.TransactionInstruction SetMetadataMint(SetMetadataMintAccounts accounts, PublicKey programId)
             {
-                List<Solnet.Rpc.Models.AccountMeta> keys = new()
-                {Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, true), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.Mint, false)};
+                List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
+                {Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.ClubAdmin, true), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.Mint, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(4474527388172282435UL, offset);
                 offset += 8;
                 byte[] resultData = new byte[offset];
                 Array.Copy(_data, resultData, offset);
-                return new Solnet.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
+                return new Solana.Unity.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
             }
 
-            public static Solnet.Rpc.Models.TransactionInstruction StartGame(StartGameAccounts accounts, PublicKey programId)
+            public static Solana.Unity.Rpc.Models.TransactionInstruction StartGame(StartGameAccounts accounts, PublicKey programId)
             {
-                List<Solnet.Rpc.Models.AccountMeta> keys = new()
-                {Solnet.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.NftTokenAccount, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.NftMint, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.MetadataAccount, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Player, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Game, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.PlayerEscrow, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
+                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.NftTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.NftMint, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.MetadataAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Player, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Game, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.PlayerEscrow, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(1077946599884992505UL, offset);
                 offset += 8;
                 byte[] resultData = new byte[offset];
                 Array.Copy(_data, resultData, offset);
-                return new Solnet.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
+                return new Solana.Unity.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
             }
 
-            public static Solnet.Rpc.Models.TransactionInstruction CompleteGame(CompleteGameAccounts accounts, ulong tokens, PublicKey programId)
+            public static Solana.Unity.Rpc.Models.TransactionInstruction CompleteGame(CompleteGameAccounts accounts, ulong tokens, PublicKey programId)
             {
-                List<Solnet.Rpc.Models.AccountMeta> keys = new()
-                {Solnet.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solnet.Rpc.Models.AccountMeta.Writable(accounts.PayoutAccount, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.NftTokenAccount, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.NftMint, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Player, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.Club, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.Game, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solnet.Rpc.Models.AccountMeta.Writable(accounts.PlayerEscrow, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.AssociatedTokenProgram, false), Solnet.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
+                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.PayoutAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.NftTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.NftMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Player, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Game, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.PlayerEscrow, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.AssociatedTokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(9537698836256408937UL, offset);
@@ -870,7 +870,7 @@ namespace TrainingGrounds
                 offset += 8;
                 byte[] resultData = new byte[offset];
                 Array.Copy(_data, resultData, offset);
-                return new Solnet.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
+                return new Solana.Unity.Rpc.Models.TransactionInstruction{Keys = keys, ProgramId = programId.KeyBytes, Data = resultData};
             }
         }
     }

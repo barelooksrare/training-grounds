@@ -1,16 +1,16 @@
 using System.Text;
 using System.Collections.Generic;
-using Solnet;
-using Solnet.Programs;
-using Solnet.Programs.Abstract;
-using Solnet.Programs.Utilities;
-using Solnet.Rpc;
-using Solnet.Rpc.Builders;
-using Solnet.Rpc.Core.Http;
-using Solnet.Rpc.Core.Sockets;
-using Solnet.Rpc.Models;
-using Solnet.Rpc.Types;
-using Solnet.Wallet;
+using Solana.Unity;
+using Solana.Unity.Programs;
+using Solana.Unity.Programs.Abstract;
+using Solana.Unity.Programs.Utilities;
+using Solana.Unity.Rpc;
+using Solana.Unity.Rpc.Builders;
+using Solana.Unity.Rpc.Core.Http;
+using Solana.Unity.Rpc.Core.Sockets;
+using Solana.Unity.Rpc.Models;
+using Solana.Unity.Rpc.Types;
+using Solana.Unity.Wallet;
 using TrainingGrounds.Accounts;
 using TrainingGrounds.Program;
 using TrainingGrounds.Types;
@@ -331,9 +331,9 @@ namespace TrainingGrounds.Utils
 
         public static async Task<List<Club>> FetchActiveClubsAsync(IRpcClient client)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp>
+            var list = new List<Solana.Unity.Rpc.Models.MemCmp>
             {
-                new Solnet.Rpc.Models.MemCmp
+                new Solana.Unity.Rpc.Models.MemCmp
                 {
                     Bytes = Club.ACCOUNT_DISCRIMINATOR_B58,
                     Offset = 0
@@ -358,9 +358,9 @@ namespace TrainingGrounds.Utils
 
         public static async Task<List<Club>> FetchAllClubsAsync(IRpcClient client)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp>
+            var list = new List<Solana.Unity.Rpc.Models.MemCmp>
             {
-                new Solnet.Rpc.Models.MemCmp
+                new Solana.Unity.Rpc.Models.MemCmp
                 {
                     Bytes = Club.ACCOUNT_DISCRIMINATOR_B58,
                     Offset = 0

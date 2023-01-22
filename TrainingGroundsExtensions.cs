@@ -17,6 +17,17 @@ namespace TrainingGrounds.Extensions
             var calculatedEnergy = player.Energy + timePassed / rechargeInterval;
             return (int)Math.Min(calculatedEnergy, club.GameParams.MaxPlayerEnergy);
         }
+        
+        public static TimeSpan GetTimeUntilCharge(this Player player, Club club)
+        {
+            var energy = player.GetEnergy(club);
+            if (energy == club.GameParams.MaxPlayerEnergy) return TimeSpan.Zero;
+            var rechargeStartTime = player.RechargeStartTime;
+            var now = DateTimeOffset.Now.ToUnixTimeSeconds();
+            var timePassed = (now - rechargeStartTime) % (club.GameParams.EnergyRechargeMinutes * 60);
+            var timeRemaining = club.GameParams.EnergyRechargeMinutes * 60 - timePassed;
+            return TimeSpan.FromSeconds(timeRemaining);
+        }
 
         public static DisplayGameParams GetDisplayGameParams(this Club club)
         {

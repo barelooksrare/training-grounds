@@ -89,9 +89,13 @@ namespace TrainingGrounds
 
             public byte RewardMintDecimals { get; set; }
 
-            public bool GameIsActive { get; set; }
+            public bool IsActive { get; set; }
 
             public GameParams GameParams { get; set; }
+
+            public uint MemberCount { get; set; }
+
+            public uint ActiveGames { get; set; }
 
             public static Club Deserialize(ReadOnlySpan<byte> _data)
             {
@@ -118,10 +122,14 @@ namespace TrainingGrounds
                 offset += 32;
                 result.RewardMintDecimals = _data.GetU8(offset);
                 offset += 1;
-                result.GameIsActive = _data.GetBool(offset);
+                result.IsActive = _data.GetBool(offset);
                 offset += 1;
                 offset += GameParams.Deserialize(_data, offset, out var resultGameParams);
                 result.GameParams = resultGameParams;
+                result.MemberCount = _data.GetU32(offset);
+                offset += 4;
+                result.ActiveGames = _data.GetU32(offset);
+                offset += 4;
                 return result;
             }
         }
@@ -135,7 +143,7 @@ namespace TrainingGrounds
 
             public PublicKey Player { get; set; }
 
-            public bool IsPlaying { get; set; }
+            public long StartTime { get; set; }
 
             public static Game Deserialize(ReadOnlySpan<byte> _data)
             {
@@ -152,8 +160,8 @@ namespace TrainingGrounds
                 offset += 32;
                 result.Player = _data.GetPubKey(offset);
                 offset += 32;
-                result.IsPlaying = _data.GetBool(offset);
-                offset += 1;
+                result.StartTime = _data.GetS64(offset);
+                offset += 8;
                 return result;
             }
         }
@@ -169,7 +177,7 @@ namespace TrainingGrounds
 
             public byte Energy { get; set; }
 
-            public ulong RechargeStartTime { get; set; }
+            public long RechargeStartTime { get; set; }
 
             public uint GamesPlayed { get; set; }
 
@@ -190,7 +198,7 @@ namespace TrainingGrounds
                 offset += 32;
                 result.Energy = _data.GetU8(offset);
                 offset += 1;
-                result.RechargeStartTime = _data.GetU64(offset);
+                result.RechargeStartTime = _data.GetS64(offset);
                 offset += 8;
                 result.GamesPlayed = _data.GetU32(offset);
                 offset += 4;
@@ -211,7 +219,8 @@ namespace TrainingGrounds
             MintNotNft = 6005U,
             OutOfEnergy = 6006U,
             EnergyCalculationFailed = 6007U,
-            ClubInactive = 6008U
+            ClubInactive = 6008U,
+            InvalidInput = 6009U
         }
     }
 
@@ -223,7 +232,7 @@ namespace TrainingGrounds
 
             public byte MaxPlayerEnergy { get; set; }
 
-            public ulong EnergyRechargeMinutes { get; set; }
+            public long EnergyRechargeMinutes { get; set; }
 
             public int Serialize(byte[] _data, int initialOffset)
             {
@@ -232,7 +241,7 @@ namespace TrainingGrounds
                 offset += 8;
                 _data.WriteU8(MaxPlayerEnergy, offset);
                 offset += 1;
-                _data.WriteU64(EnergyRechargeMinutes, offset);
+                _data.WriteS64(EnergyRechargeMinutes, offset);
                 offset += 8;
                 return offset - initialOffset;
             }
@@ -245,7 +254,7 @@ namespace TrainingGrounds
                 offset += 8;
                 result.MaxPlayerEnergy = _data.GetU8(offset);
                 offset += 1;
-                result.EnergyRechargeMinutes = _data.GetU64(offset);
+                result.EnergyRechargeMinutes = _data.GetS64(offset);
                 offset += 8;
                 return offset - initialOffset;
             }
@@ -579,7 +588,7 @@ namespace TrainingGrounds
 
         protected override Dictionary<uint, ProgramError<TrainingGroundsErrorKind>> BuildErrorsDictionary()
         {
-            return new Dictionary<uint, ProgramError<TrainingGroundsErrorKind>>{{6000U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.ProgramAuthorityMismatch, "Signer does not match program authority")}, {6001U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.CollectionProofInvalid, "Collection Proof is invalid")}, {6002U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.CollectionKeyMismatch, "Collection Key Mismatch")}, {6003U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.TokenOwnerMismatch, "Caller does not own the token account")}, {6004U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.OwnerBalanceMismatch, "Caller does not own the NFT")}, {6005U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.MintNotNft, "Mint is not an NFT")}, {6006U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.OutOfEnergy, "Energy depleted")}, {6007U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.EnergyCalculationFailed, "Energy calculation failed")}, {6008U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.ClubInactive, "Club inactive")}, };
+            return new Dictionary<uint, ProgramError<TrainingGroundsErrorKind>>{{6000U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.ProgramAuthorityMismatch, "Signer does not match program authority")}, {6001U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.CollectionProofInvalid, "Collection Proof is invalid")}, {6002U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.CollectionKeyMismatch, "Collection Key Mismatch")}, {6003U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.TokenOwnerMismatch, "Caller does not own the token account")}, {6004U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.OwnerBalanceMismatch, "Caller does not own the NFT")}, {6005U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.MintNotNft, "Mint is not an NFT")}, {6006U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.OutOfEnergy, "Energy depleted")}, {6007U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.EnergyCalculationFailed, "Energy calculation failed")}, {6008U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.ClubInactive, "Club inactive")}, {6009U, new ProgramError<TrainingGroundsErrorKind>(TrainingGroundsErrorKind.InvalidInput, "Invalid input")}, };
         }
     }
 
@@ -839,7 +848,7 @@ namespace TrainingGrounds
             public static Solana.Unity.Rpc.Models.TransactionInstruction StartGame(StartGameAccounts accounts, PublicKey programId)
             {
                 List<Solana.Unity.Rpc.Models.AccountMeta> keys = new()
-                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.NftTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.NftMint, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.MetadataAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Player, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Game, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.PlayerEscrow, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
+                {Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Signer, true), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.NftTokenAccount, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.NftMint, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.MetadataAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Player, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Club, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.Game, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.RewardMint, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.RewardAccount, false), Solana.Unity.Rpc.Models.AccountMeta.Writable(accounts.PlayerEscrow, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.TokenProgram, false), Solana.Unity.Rpc.Models.AccountMeta.ReadOnly(accounts.SystemProgram, false)};
                 byte[] _data = new byte[1200];
                 int offset = 0;
                 _data.WriteU64(1077946599884992505UL, offset);

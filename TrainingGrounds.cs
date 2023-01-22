@@ -79,6 +79,8 @@ namespace TrainingGrounds
             public static ulong ACCOUNT_DISCRIMINATOR => 13069064119827879508UL;
             public static ReadOnlySpan<byte> ACCOUNT_DISCRIMINATOR_BYTES => new byte[]{84, 214, 36, 249, 146, 164, 94, 181};
             public static string ACCOUNT_DISCRIMINATOR_B58 => "FC2BQypmzAQ";
+            public byte Version { get; set; }
+
             public PublicKey ClubAdmin { get; set; }
 
             public CollectionIdentifier CollectionIdentifier { get; set; }
@@ -91,11 +93,13 @@ namespace TrainingGrounds
 
             public bool IsActive { get; set; }
 
-            public GameParams GameParams { get; set; }
-
             public uint MemberCount { get; set; }
 
             public uint ActiveGames { get; set; }
+
+            public byte[] Reserved { get; set; }
+
+            public GameParams GameParams { get; set; }
 
             public static Club Deserialize(ReadOnlySpan<byte> _data)
             {
@@ -108,6 +112,8 @@ namespace TrainingGrounds
                 }
 
                 Club result = new Club();
+                result.Version = _data.GetU8(offset);
+                offset += 1;
                 result.ClubAdmin = _data.GetPubKey(offset);
                 offset += 32;
                 offset += CollectionIdentifier.Deserialize(_data, offset, out var resultCollectionIdentifier);
@@ -124,12 +130,14 @@ namespace TrainingGrounds
                 offset += 1;
                 result.IsActive = _data.GetBool(offset);
                 offset += 1;
-                offset += GameParams.Deserialize(_data, offset, out var resultGameParams);
-                result.GameParams = resultGameParams;
                 result.MemberCount = _data.GetU32(offset);
                 offset += 4;
                 result.ActiveGames = _data.GetU32(offset);
                 offset += 4;
+                result.Reserved = _data.GetBytes(offset, 64);
+                offset += 64;
+                offset += GameParams.Deserialize(_data, offset, out var resultGameParams);
+                result.GameParams = resultGameParams;
                 return result;
             }
         }
@@ -234,6 +242,8 @@ namespace TrainingGrounds
 
             public long EnergyRechargeMinutes { get; set; }
 
+            public bool BurnRemainingTokens { get; set; }
+
             public int Serialize(byte[] _data, int initialOffset)
             {
                 int offset = initialOffset;
@@ -243,6 +253,8 @@ namespace TrainingGrounds
                 offset += 1;
                 _data.WriteS64(EnergyRechargeMinutes, offset);
                 offset += 8;
+                _data.WriteBool(BurnRemainingTokens, offset);
+                offset += 1;
                 return offset - initialOffset;
             }
 
@@ -256,6 +268,8 @@ namespace TrainingGrounds
                 offset += 1;
                 result.EnergyRechargeMinutes = _data.GetS64(offset);
                 offset += 8;
+                result.BurnRemainingTokens = _data.GetBool(offset);
+                offset += 1;
                 return offset - initialOffset;
             }
         }

@@ -54,6 +54,11 @@ namespace TrainingGrounds.Utils
             }
             MaxRewardsPerGame = maxRewards;
         }
+
+        public DisplayGameParams(int decimals)
+        {
+            this.decimals = decimals;
+        }
         
         public static implicit operator GameParams(DisplayGameParams displayParams)
         {
@@ -371,22 +376,19 @@ namespace TrainingGrounds.Utils
 
         public static async Task<List<Club>> FetchActiveClubsAsync(IRpcClient client)
         {
-            var list = new List<Solana.Unity.Rpc.Models.MemCmp>
+            var list = new List<MemCmp>
             {
-                new Solana.Unity.Rpc.Models.MemCmp
+                new MemCmp
                 {
                     Bytes = Club.ACCOUNT_DISCRIMINATOR_B58,
                     Offset = 0
                 },
                 new MemCmp
                 {
-                    Bytes = Convert.ToBase64String(
-                        new[]
-                        {
-                            Convert.ToByte(true)
-                        }
+                    Bytes = new Solana.Unity.Wallet.Utilities.Base58Encoder().EncodeData(
+                        new byte[]{Convert.ToByte(true)}
                     ),
-                    Offset = 107
+                    Offset = 108
                 }
             };
             var res = await client.GetProgramAccountsAsync(PROGRAM_ID, Commitment.Confirmed, memCmpList: list);
@@ -452,6 +454,12 @@ namespace TrainingGrounds.Utils
                 return null;
             var uri = DecodeJsonMetadataUri(Convert.FromBase64String(res.Result.Value.Data[0]));
             return uri;
+        }
+
+        public static async Task<byte> FetchMintDecimals(PublicKey mint, IRpcClient client)
+        {
+            var mintInfo = await client.GetTokenMintInfoAsync(mint);
+            return mintInfo?.Result?.Value?.Data?.Parsed?.Info?.Decimals ?? 0;
         }
         
         private static string DecodeJsonMetadataUri(ReadOnlySpan<byte> data)
